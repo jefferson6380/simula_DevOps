@@ -2,57 +2,44 @@ name: Meu CI
 
 on:
   push:
-    branchs:
-    - main
-on:
-  pull request:
-    branchs:
-    - main
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  runs-on: ubunto-latest
+  test:
+    runs-on: ubuntu-latest
 
-  steps:
-  - name: checkout do codgo
-  - uses: actions/checkout@v3
-  - run: echo "codgo baixado com sucesso"
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
 
-  steps:
-  - name: configuraçao node js
-  - use: actions/setup-node@v3
-    with:
-      node-version: 18
-  - run: echo "node js configurado!"
+      - name: Configuração do Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
-  steps:
-  - name: instalar dependencias
-  - run: npm install
-  - run: echo "npm install executado"
+      - name: Cache de dependências
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
-  - name: Cache de dependências
-    uses: actions/cache@v3
-    with:
-      path: ~/.npm
-      key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      restore-keys: |
-        ${{ runner.os }}-node-
+      - name: Instalar dependências
+        run: |
+          npm install
+          echo "npm install executado"
 
-  steps:
-  - name: Verificação de Estilo (Lint)
-  - run: npm run lint
-  - run: echo "npm run list executado"
+      - name: Verificação de Estilo (Lint)
+        run: |
+          npm run lint
+          echo "npm run lint executado"
 
-  steps:
-  - name: executar testes
-  - run: npm test
-  - run: echo "npm test executado!"
-
-
-           
-                
-
-              
-               
-
-
-        
+      - name: Executar testes
+        run: |
+          npm test
+          echo "npm test executado"
