@@ -102,5 +102,3 @@ Antes de partir para o Terraform, você pode rodar o projeto em sua máquina.
     npm start
     ```
 A API estará disponível em `http://localhost:3000`.
-
-Boa sorte!
